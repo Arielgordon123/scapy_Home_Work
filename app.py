@@ -1,14 +1,18 @@
 from scapy.all import *
-
 import re
-
+# load the packet file
 packets = rdpcap('CaptureFile.cap')
 
-
+# Q1
 print(packets[0])
 print("packet len: ",len(packets[0]))
 
+# OUTPUT 
+# b'\x00\x1f\x1f\xbf\x9f\x10\x00&^gf^\x08\x00E\x00\x00F?\xa4\x00\x00\x80\x11uG\xc0\xa8\x02j\xc0\xa8\x02\x01\xc8\xb4\x005\x002x\xc0\x86\x9c\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x03www\x10google-analytics\x03com\x00\x00\x01\x00\x01'
+# packet len:  84
 
+
+# Q2
 def serach_in_cap(packet,obj):
     _cnt = 0
     for i in range(len(packet)):
@@ -25,9 +29,17 @@ def serach_in_cap(packet,obj):
 obj = [["google",0],["ynet",0],["SuperPharmLogo.gif",0],["HelloWorld",0]]
 
 obj = serach_in_cap(packets,obj)
+for l in obj:
+    print(str.format("The string: \"{}\" has {} appearance",l[0],l[1]))
 
-print(obj)
+# OUTPUT:
+# The string: "google" has 264 appearance
+# The string: "ynet" has 307 appearance
+# The string: "SuperPharmLogo.gif" has 1 appearance
+# The string: "HelloWorld" has 0 appearance
 
+
+# Q3
 def get_num_of_packets(packet):
     _cnt = 0
     sessions = packet.sessions()
@@ -39,6 +51,10 @@ def get_num_of_packets(packet):
 
 print("Packets length is:",get_num_of_packets(packets))
 
+# OUTPUT:
+# Packets length is: 1115
+
+# Q4
 def get_max_len_packet(packets):
     max_len = 0
     place = 1
@@ -54,7 +70,10 @@ def get_max_len_packet(packets):
                 pass
     print("max Length is:", max_len, "Sesion Id",place)
     return max_len
+# OUTPUT:
+# max Length is: 1514 Sesion Id 20
 
+# Q5
 def get_min_len_packet(packets):
     min_len = get_max_len_packet(packets)
     place = 1
@@ -71,7 +90,10 @@ def get_min_len_packet(packets):
     print("min Length is:", min_len, "Sesion Id",place)
 get_min_len_packet(packets)
 
-# \\r\\nHost: (.*?)\\r\\n
+# OUTPUT:
+# min Length is: 42 Sesion Id 470
+
+# Q6
 def get_host_name(packets):
     for session in range(len(packets)):
         for pck in packets[session]:
@@ -86,6 +108,9 @@ def get_host_name(packets):
                 # print(traceback.format_exc())
 # get_host_name(packets)
 
+# OUTPUT:
+
+# Q7
 def get_user_name(packets):
     for session in range(len(packets)):
         for pck in packets[session]:
@@ -103,34 +128,27 @@ def get_user_name(packets):
                 pass
                 # print(traceback.format_exc())
 get_user_name(packets)
+# OUTPUT:
+# userName: administrator password: TOP_SECRET
 
+# Q8
 def get_dns(packets):
-    s = 0
-    pp = 0
-    for p in packets:
+    lst = []
+    for i,p in enumerate(packets):
         if p.haslayer(DNS):   
             if p.qdcount > 0 and isinstance(p.qd, DNSQR):
-                p.show()
+                print(p.dst)
+                # Q10
                 name = p.qd.qname
-                pp+=1
-            elif p.ancount > 0 and isinstance(p.an, DNSRR):
-                name = p.an.rdata
-                s+=1
+                # Q9
+                lst.append({"id":i,name:name})
             else:
                 continue
 
-            print(name)
-    print(s,pp)
-        # try:
-        #     # if packets[session].haslayer(DNSQR):
-        #     #     s +=1
-        #     #     # packets[session].show()
-        #     #     # print(pck.dst, pck.src)
-        #     print(ls(packets[session][DNS]))
             
-        #     # print(packets[session])
-        #     p+=1
-        # except:
-        #     pass
-    
+    print(lst)
+        
 get_dns(packets)
+
+
+
