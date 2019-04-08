@@ -30,6 +30,7 @@ max Length is: 1514 Sesion Id 20
 OUTPUT:
 min Length is: 42 Sesion Id 470
 ```
+
 * Q6
 ```
 www.ynet.co.il
