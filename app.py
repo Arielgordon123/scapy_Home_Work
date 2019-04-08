@@ -106,7 +106,7 @@ def get_host_name(packets):
             except:
                 pass
                 # print(traceback.format_exc())
-# get_host_name(packets)
+get_host_name(packets)
 
 # OUTPUT:
 
